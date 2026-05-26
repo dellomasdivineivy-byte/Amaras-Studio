@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { Mail, Lock, Camera, ArrowRight } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
+// INAYOS: Isang "../" na lang para mahanap ang context folder mula sa src/pages/
+import { useAuth } from '../context/AuthContext'; 
 
-export const Login: React.FC = () => {
+const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { login } = useAuth();
@@ -12,8 +13,13 @@ export const Login: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await login(email, password);
-    navigate('/dashboard');
+    try {
+      // INAYOS: 'login' na lowercase para tumakbo ang auth function at hindi mag-infinite loop
+      await login(email, password);
+      navigate('/dashboard');
+    } catch (error) {
+      console.error("Login failed:", error);
+    }
   };
 
   return (
@@ -27,8 +33,8 @@ export const Login: React.FC = () => {
           <div className="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-white/10">
             <Camera className="w-8 h-8 text-white" />
           </div>
-          <h2 className="text-3xl font-light tracking-tight text-white uppercase">Welcome</h2>
-          <p className="text-white/40 text-sm mt-2 font-light">Access your Amaras Studio account</p>
+          <h2 className="text-3xl font-light tracking-tight text-white uppercase">AMARAS STUDIO</h2>
+          <p className="text-white/40 text-sm mt-2 font-light">Access your studio account</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -80,12 +86,12 @@ export const Login: React.FC = () => {
             >
               Admin: admin@amaras.com
             </button>
-           <button
-            onClick={() => { setEmail('staff@amaras.com'); setPassword('UserCircle123'); }}
+            <button
+              onClick={() => { setEmail('staff@amaras.com'); setPassword('UserCircle123'); }}
               className="text-[10px] text-white/40 hover:text-white/60 transition-colors uppercase tracking-widest"
             >
-             staff: staff@amaras.com 
-           </button>
+              Staff: staff@amaras.com 
+            </button>
             <button 
               onClick={() => { setEmail('client@example.com'); setPassword('user123'); }}
               className="text-[10px] text-white/40 hover:text-white/60 transition-colors uppercase tracking-widest"
@@ -98,3 +104,5 @@ export const Login: React.FC = () => {
     </div>
   );
 };
+
+export default Login;
